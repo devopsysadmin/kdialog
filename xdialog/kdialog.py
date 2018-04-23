@@ -1,7 +1,4 @@
-import subprocess
-from shlex import split
-
-def __init(**kwargs):
+def __cmd(**kwargs):
     cmd = ['kdialog']
     def append_optionals(key):
         if kwargs.get(key, None) is not None:
@@ -12,12 +9,19 @@ def __init(**kwargs):
 
 
 def __run(cmd):
+    import subprocess
+    from shlex import split
+    if isinstance(cmd, str):
+        cmd = split(cmd)
     proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     return proc.returncode, proc.stdout.decode('utf8')
 
+def sudo(command):
+    return __run('kdesu -t -c %s' %command)
+
 
 def msgbox(text, **kwargs):
-    cmd = __init(**kwargs) + ['--msgbox', text]
+    cmd = __cmd(**kwargs) + ['--msgbox', text]
     return __run(cmd)
 
 '''
@@ -29,7 +33,7 @@ Note: If there are more than one item checked, the last one applies
 Ex: [('foo', 'Something nice', False), ('bar', 'Something ugly', True)]
 '''
 def radiolist(caption, elements, **kwargs):
-    cmd = __init(**kwargs) + ['--radiolist', caption ]
+    cmd = __cmd(**kwargs) + ['--radiolist', caption ]
     for key, title, enabled in [ element for element in elements ]:
         cmd.append('%s' %key)
         cmd.append(u'%s' %title)
@@ -38,8 +42,6 @@ def radiolist(caption, elements, **kwargs):
 
 
 def detailed_error(caption, details, **kwargs):
-    cmd = __init(**kwargs) + [ '--detailederror', caption, details ]
+    cmd = __cmd(**kwargs) + [ '--detailederror', caption, details ]
     return __run(cmd)
 
-def kdesu(command):
-    return __run(split('kdesu -t -c %s' %command))
