@@ -42,4 +42,4 @@ def detailed_error(caption, details, **kwargs):
     return __run(cmd)
 
 def kdesu(command):
-    return __run(shlex.split('kdesu -t -c %s' %command))
+    return __run(split('kdesu -t -c %s' %command))
