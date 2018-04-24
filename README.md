@@ -3,6 +3,12 @@ Python 3 library for easy managing _desktop_ dialog boxes
 
 Currently there is only kdialog implementation, but zenity is also in the scope
 
+# Requirements
+
+- Python 3.x for any desktop
+- kdesu for plasma desktop
+- gksu for gtk-based desktop (gnome, ubuntu...)
+
 # Usage
 
 The simplest usage is letting pyalog to guess which dialog tool should be used:
