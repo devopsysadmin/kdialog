@@ -1,5 +1,5 @@
 import logging
-from xdialog import __run
+from pyalog import __run
 
 exe = 'kdialog'
 

@@ -26,10 +26,10 @@ def get_desktop_tool():
     return exe
 
 
-def xdialog_set(name):
+def pyalog_set(name):
     import importlib
-    return importlib.import_module('%s.%s' %('xdialog', name))
+    return importlib.import_module('%s.%s' %('pyalog', name))
 
 
-if 'xdialog' not in locals().keys():
-    xdialog = xdialog_set(get_desktop_tool())
+if 'pyalog' not in locals().keys():
+    pyalog = pyalog_set(get_desktop_tool())
