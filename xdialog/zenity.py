@@ -1,5 +1,10 @@
+import logging
+from xdialog import __run
+
+exe = 'zenity'
+
 def __cmd(**kwargs):
-    cmd = ['zenity']
+    cmd = [exe]
     def append_optionals(key):
         if kwargs.get(key, None) is not None:
             cmd.append(key)
@@ -7,17 +12,34 @@ def __cmd(**kwargs):
     return cmd
 
 
-def __run(cmd):
-    import subprocess
-    from shlex import split
-    if isinstance(cmd, str):
-        cmd = split(cmd)
-    proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    return proc.returncode, proc.stdout.decode('utf8')
-
 def sudo(command):
-    return __run('kdesu -t -c %s' %command)
+    return __run('gksu --sudo-mode %s' %command)
+
 
 def msgbox(text, **kwargs):
     cmd = __cmd(**kwargs) + [ '--info', '--text', text ]
     return __run(cmd)
+
+
+def radiolist(caption, elements, **kwargs):
+    cmd = __cmd(**kwargs) + [
+                            '--list', '--radiolist',
+                            '--text', caption,
+                            '--column', "", 
+                            '--column', 'Key', 
+                            '--column', 'Option'
+                            ]
+    for key, title, enabled in [ element for element in elements ]:
+        cmd.append('TRUE' if enabled else 'FALSE')
+        cmd.append('%s' %key)
+        cmd.append(u'%s' %title)
+    return __run(cmd)
+
+
+def error(caption, details, **kwargs):
+    cmd = __cmd(**kwargs) + [ '--error', '--title', caption ]
+    return __run(cmd)
+
+
+def detailed_error(caption, details, **kwargs):
+    return error(caption, details, **kwargs)
