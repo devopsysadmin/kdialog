@@ -21,6 +21,14 @@ def msgbox(text, **kwargs):
     return __run(cmd)
 
 
+'''
+*elements* is list of tuples. Each tuple contains 3 values:
+- (str) return value: a string without spaces or special characters
+- (str) title: how will be shown in display
+- (bool) checked: Determine if this item is checked when radiolist appears
+Note: If there are more than one item checked, the last one applies
+Ex: [('foo', 'Something nice', False), ('bar', 'Something ugly', True)]
+'''
 def radiolist(caption, elements, **kwargs):
     cmd = __cmd(**kwargs) + [
                             '--list', '--radiolist',
