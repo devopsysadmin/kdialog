@@ -5,12 +5,18 @@ import re
 from pyalog import Output
 
 exe = 'python'
-height, width = [int(x) for x in popen('stty size', 'r').read().split() ]
+height, width = [ int(x) for x in popen('stty size', 'r').read().split() ]
+
+class msg(object):
+    @staticmethod
+    def info(message):
+        return '[PYALOG][INFO] %s' %message
+    def error(message):
+        return '[PYALOG][ERROR] %s' %message
 
 
 def msgbox(text, **kwargs):
-    print('[INFO] %s' %text)
-
+    print(msg.info(text))
 
 '''
 *elements* is list of tuples. Each tuple contains 3 values:
@@ -35,7 +41,7 @@ def radiolist(caption, elements, **kwargs):
 
 
 def detailed_error(caption, details, **kwargs):
-    lines = ('[ERROR] %s' %caption, '', 'Details:', details, '')
+    lines = (msg.error(caption), '', 'Details:', details, '')
     print('\n'.join(lines))
     return Output(0, '')
 

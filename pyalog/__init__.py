@@ -25,16 +25,16 @@ def __run(cmd):
 
 def get_desktop_tool():
     from os import path, getenv
-    desktop = path.basename(getenv('DESKTOP_SESSION'))
+    desktop = path.basename(list(filter(None,(
+                getenv('DESKTOP_SESSION'),
+                'console'
+                )))[0])
     env_map = {
         'gnome' : 'zenity',
         'ubuntu' : 'zenity',
         'plasma' : 'kdialog'
     }
-    exe = env_map.get(desktop, None)
-    if exe is None:
-        print('No desktop session available in list. Setting to console')
-        exe = 'console'
+    exe = env_map.get(desktop, 'console')
     return exe
 
 
