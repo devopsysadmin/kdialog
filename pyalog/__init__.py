@@ -1,4 +1,7 @@
 import logging
+from types import SimpleNamespace
+
+__DEFAULT = 'console'
 
 class Output:
     def __init__(self, sc, stdout):
@@ -12,7 +15,6 @@ class Output:
         return { 'sc' : self.sc, 'stdout' : self.stdout }
 
 
-
 def __run(cmd):
     import subprocess
     from shlex import split
@@ -23,25 +25,31 @@ def __run(cmd):
     return Output(sc, stdout)
 
 
-def get_desktop_tool():
-    from os import path, getenv
-    desktop = path.basename(list(filter(None,(
-                getenv('DESKTOP_SESSION'),
-                'console'
-                )))[0])
+def get_desktop_tool(name='auto'):
+    from os import path, environ
     env_map = {
         'gnome' : 'zenity',
         'ubuntu' : 'zenity',
-        'plasma' : 'kdialog'
+        'plasma' : 'kdialog',
+        'apple' : 'osascript',
+        'kde' : 'kdialog',
+        'console' : 'console',
+        'kdialog' : 'kdialog',
+        'zenity' : 'zenity'
     }
-    exe = env_map.get(desktop, 'console')
-    return exe
+    if name == 'auto':
+        desktop = __DEFAULT
+        if 'DESKTOP_SESSION' in environ:
+            desktop = environ['DESKTOP_SESSION']
+        elif 'Apple_PubSub_Socket_Render' in environ:
+            desktop = 'apple'
+        return env_map.get(desktop, __DEFAULT)
+    else:
+        return env_map.get(name, __DEFAULT)
 
 
-def pyalog_set(name):
+def init(name='auto'):
     import importlib
-    return importlib.import_module('%s.%s' %('pyalog', name))
+    desktop = get_desktop_tool(name)
+    return importlib.import_module('%s.%s' %('pyalog', desktop))
 
-
-if 'pyalog' not in locals().keys():
-    pyalog = pyalog_set(get_desktop_tool())
