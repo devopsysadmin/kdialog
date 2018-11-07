@@ -9,8 +9,8 @@ def get_args():
                         default='auto',
                         help='Forces desktop environment tool'
                         )
-    parser.add_argument('-a', '--action')
-    parser.add_argument('-p', '--parameters')
+    parser.add_argument('action')
+    parser.add_argument('-p', '--parameters', nargs='+')
     return parser.parse_args()
 
 
@@ -18,24 +18,23 @@ def error(message):
     print(message)
     sys.exit(1)
 
-def string_to_map(string):
+def array_to_map(array):
     p_map = {}
-    for p in string.split(','):
+    for p in array:
         k, _, v = p.partition('=')
         p_map[k] = v
     return p_map
 
 def main():
     args = get_args()
-    if args.desktop_environment_tool != 'auto':
-        dialog = pyalog.init(args.desktop_environment_tool)
+    dialog = pyalog.init(args.desktop_environment_tool)
 
     actions_map = {
         'msgbox' : dialog.msgbox
     }
     action = actions_map.get(args.action, None)
     if action:
-        params_map = string_to_map(args.parameters)
+        params_map = array_to_map(args.parameters)
         action(**params_map)
     else:
         error('Unrecognized action')
